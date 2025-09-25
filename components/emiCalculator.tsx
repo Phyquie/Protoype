@@ -11,7 +11,6 @@ interface EmiCalculatorProps {
   defaultInterestRate?: number;
   defaultHeading?: string;
 }
-
 const EmiCalculator: React.FC<EmiCalculatorProps> = ({
   defaultCarPrice = 720000,
   defaultDownPayment = 320000,

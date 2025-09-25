@@ -19,12 +19,19 @@ const Page = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const [split, setSplit] = useState(false);
 
+  
+
   useEffect(() => {
-    // Heading fade out animation
-    gsap.to(headingRef.current, {
+   const letters = headingRef.current?.querySelectorAll("span");
+
+  if (letters) {
+    gsap.to(letters, {
       opacity: 0,
       y: -50,
+      rotationX: 90,   // gives splitting/flip look
+      stagger: 0.05,   // delay per letter
       duration: 1,
+      ease: "power2.inOut",
       scrollTrigger: {
         trigger: headingRef.current,
         start: "center center",
@@ -32,8 +39,8 @@ const Page = () => {
         scrub: true,
       }
     });
+  }
 
-    // Pin the section when its top hits the center of the viewport
     ScrollTrigger.create({
       trigger: sectionRef.current,
       start: "top center",
@@ -42,7 +49,6 @@ const Page = () => {
       pinSpacing: true,
     });
 
-    // Cleanup function
     return () => {
       ScrollTrigger.getAll().forEach(st => st.kill());
     };
@@ -50,7 +56,6 @@ const Page = () => {
 
   useEffect(() => {
     if (split) {
-      // Animate glass div out
       gsap.to(glassDivRef.current, {
         x: -200,
         opacity: 0,
@@ -58,7 +63,6 @@ const Page = () => {
         ease: 'power2.inOut',
         pointerEvents: 'none',
       });
-      // Animate text div fixed left, fade in from right
       gsap.fromTo(
         splitTextRef.current,
         { x: 100, opacity: 0, width: 720, height: 260 },
@@ -72,7 +76,6 @@ const Page = () => {
         }
       );
        
-      // Animate background image to shrink and shift right at the same time
       gsap.to(bgImageRef.current, {
         left: 'auto',
         right: 0,
@@ -96,7 +99,6 @@ const Page = () => {
         ease: 'power2.inOut',
         pointerEvents: 'auto',
       });
-      // Reset background image to full
       gsap.set(bgImageRef.current, {
         left: 0,
         right: 0,
@@ -111,18 +113,19 @@ const Page = () => {
         backgroundRepeat: 'no-repeat',
       });
        gsap.set(splitTextRef.current, {
-        left: 0,
-        right: 0,
-        top: 0,
-        y: 0,
-        position: 'fixed',
-        width: '100vw',
-        height: '100vh',
-        borderRadius: 0,
-        opacity: 1,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
+        // left: 0,
+        // right: 0,
+        // top: 0,
+        // y: 0,
+        // position: 'fixed',
+        // width: '100vw',
+        // height: '100vh',
+        // borderRadius: 0,
+        // opacity: 1,
+        // backgroundSize: 'cover',
+        // backgroundPosition: 'center',
+        // backgroundRepeat: 'no-repeat',
+        opacity: 0,
       });
     }
   }, [split]);
@@ -130,8 +133,7 @@ const Page = () => {
 
   return (
     <div className="relative h-[400vh] w-full">
-      {/* Fixed Background */}
-      {/* Animated background image for split effect */}
+      
       <div
         ref={bgImageRef}
         className="fixed -z-10"
@@ -155,13 +157,17 @@ const Page = () => {
       </div>
 
      {split ? null : <section className="h-screen mb-12 flex flex-col justify-end items-center text-white relative z-20 pb-52">
-  <h1 ref={headingRef} className="text-5xl md:text-7xl text-center" style={{letterSpacing: '-2px'}}>We Welcome Car Dealers</h1>
+ <h1 ref={headingRef} className="text-5xl md:text-7xl font-extrabold text-center">
+  { "We Welcome Car Dealers".split("").map((char, i) => (
+    <span key={i} className="inline-block">{char === " " ? "\u00A0" : char}</span>
+  )) }
+</h1>
       </section> }
 
   <section ref={sectionRef} className="min-h-[200vh] flex flex-col items-center justify-start relative z-30">
     <div ref={glassDivRef} className="w-[95%] md:w-[90%] flex flex-col items-center justify-center rounded-[2.5rem] p-10 md:p-16 text-white text-center backdrop-blur-2xl bg-white/10 shadow-2xl border-2 border-white/30 -mt-12 md:-mt-44 absolute left-1/2 top-0 z-20" style={{ transform: 'translateX(-50%)', background: "rgba(255, 255, 255, 0.08)", border: "1.5px solid rgba(255, 255, 255, 0.25)", boxShadow: "0 8px 40px rgba(0,0,0,0.45), inset 0 0 30px rgba(255,255,255,0.05)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)" }}>
-      <h2 className="text-3xl md:text-4xl mb-7">Why Become a dealer</h2>
-      <p className="text-base md:text-xl leading-relaxed">
+      <h2 className="text-3xl md:text-4xl font-extrabold mb-7">Why Become a dealer</h2>
+      <p className="text-base md:text-xl leading-relaxed font-extrabold">
         SIX offers a trusted, user-friendly platform tailored for used car dealers and individual sellers. Connect directly with owners to skip middlemen, negotiate freely, and buy within budget at your best price. With verified listings, genuine leads, and direct deals, SIX ensures a faster, safer, and more reliable experience. Selling is made easy with direct buyers,
       </p>
       <button onClick={() => setSplit(true)} className="bg-black text-white font-bold px-6 py-3 text-2xl rounded-xl my-8">Read More</button>
@@ -171,31 +177,24 @@ const Page = () => {
       <>
         {/* Fixed text box on left, fade in from right */}
         <div
-          ref={splitTextRef}
-          style={{
-            position: 'fixed',
-            left: 40,
-            top: '50%',
-            transform: 'translateY(-50%)',
-            width: 720,
-            height: 260,
-            background: 'rgba(255,255,255,0.10)',
-            borderRadius: '2.5rem',
-            overflow: 'hidden',
-            boxShadow: '0 8px 40px rgba(0,0,0,0.45)',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'flex-start',
-            padding: 32,
-            zIndex: 30,
-            opacity: 0,
-            border: '1.5px solid rgba(255, 255, 255, 0.25)',
-          }}
-          className="text-white"
-        >
-        
-          <p className="text-base md:text-xl leading-relaxed">
+  ref={splitTextRef}
+  className="fixed left-10 top-1/2 -translate-y-1/2 z-30 opacity-0 text-white"
+  style={{
+    width: 720,
+    height: 260,
+    background: "rgba(255,255,255,0.10)",
+    borderRadius: "2.5rem",
+    boxShadow: "0 8px 40px rgba(0,0,0,0.45)",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "flex-start",
+    padding: 32,
+    border: "1.5px solid rgba(255, 255, 255, 0.25)",
+  }}
+>
+          <h1 className="text-4xl font-bold mb-2">Point 1</h1>
+          <p className="text-base md:text-xl leading-relaxed font-extrabold">
             SIX offers a trusted, user-friendly platform tailored for used car dealers and individual sellers. Connect directly with owners to skip middlemen, negotiate freely, and buy within budget at your best price. With verified listings, genuine leads, and direct deals, SIX ensures a aster, safer, and more reliable experience. Selling is made easy with direct buyers.this is after the transition
           </p>
         </div>
