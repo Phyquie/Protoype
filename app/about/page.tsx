@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import AboutUsMobile from "@/components/aboutUsMobile";
 
 // Dummy team data - replace with API integration later
 const teamData = [
@@ -11,7 +12,8 @@ const teamData = [
     title: "Chief Designing Officer (CDO)",
     description: "Arya leads our creative vision, ensuring every design reflects innovation, functionality, and style. With a keen eye for detail and user experience, Arya transforms ideas into visually compelling and practical solutions, setting the tone for our brand's identity and design strategy across all platforms and projects.",
     image: "/about/1.png",
-    color: "bg-red-400"
+    color: "bg-red-400",
+    initials: "AU"
   },
   {
     id: 2,
@@ -19,7 +21,8 @@ const teamData = [
     title: "Lead Developer",
     description: "Mike is our technical lead who brings complex ideas to life through clean, efficient code. With expertise in modern web technologies and a passion for performance optimization, Mike ensures our digital solutions are not only functional but also scalable and maintainable.",
     image: "/about/3.png",
-    color: "bg-pink-400"
+    color: "bg-pink-400",
+    initials: "MJ"
   },
   {
     id: 3,
@@ -27,7 +30,8 @@ const teamData = [
     title: "Product Manager",
     description: "Alex bridges the gap between technical possibilities and business objectives. With a strategic mindset and deep understanding of user needs, Alex guides product development from concept to launch, ensuring every feature adds meaningful value to our users' experience.",
     image: "/about/3.png",
-    color: "bg-yellow-300"
+    color: "bg-yellow-300",
+    initials: "AR"
   },
   {
     id: 4,
@@ -35,7 +39,8 @@ const teamData = [
     title: "UI/UX Designer",
     description: "David crafts intuitive and engaging user experiences that make complex interactions feel effortless. With a user-centered approach and attention to accessibility, David creates designs that not only look beautiful but also serve users' needs effectively.",
     image: "/about/4.png",
-    color: "bg-orange-400"
+    color: "bg-orange-400",
+    initials: "DK"
   },
   {
     id: 5,
@@ -43,7 +48,8 @@ const teamData = [
     title: "Marketing Specialist",
     description: "Maria develops and executes marketing strategies that connect our brand with the right audience. With expertise in digital marketing and brand storytelling, Maria ensures our message resonates across all channels and drives meaningful engagement.",
     image: "/about/5.png",
-    color: "bg-purple-300"
+    color: "bg-purple-300",
+    initials: "MG"
   },
   {
     id: 6,
@@ -51,7 +57,8 @@ const teamData = [
     title: "Full Stack Developer",
     description: "Michael works across the entire technology stack, from database design to user interface implementation. With versatile skills and problem-solving expertise, Michael contributes to every layer of our technical infrastructure.",
     image: "/about/6.png",
-    color: "bg-cyan-300"
+    color: "bg-cyan-300",
+    initials: "MB"
   },
   {
     id: 7,
@@ -59,7 +66,8 @@ const teamData = [
     title: "Quality Assurance Lead",
     description: "Patricia ensures every product we release meets the highest standards of quality and reliability. With meticulous attention to detail and comprehensive testing strategies, Patricia helps us deliver exceptional user experiences consistently.",
     image: "/about/7.png",
-    color: "bg-red-300"
+    color: "bg-red-300",
+    initials: "PW"
   },
   {
     id: 8,
@@ -67,7 +75,8 @@ const teamData = [
     title: "Business Analyst",
     description: "Sarah analyzes market trends and user behavior to inform strategic decisions. With strong analytical skills and business acumen, Sarah helps us stay ahead of industry changes and continuously improve our offerings.",
     image: "/about/8.png",
-    color: "bg-green-400"
+    color: "bg-green-400",
+    initials: "SA"
   },
   {
     id: 9,
@@ -75,28 +84,30 @@ const teamData = [
     title: "DevOps Engineer",
     description: "Paul manages our infrastructure and deployment processes, ensuring reliable and scalable systems. With expertise in cloud technologies and automation, Paul keeps our applications running smoothly and efficiently.",
     image: "/about/8.png", // Reusing image for demo
-    color: "bg-blue-400"
+    color: "bg-blue-400",
+    initials: "PS"
   }
 ];
 
-const getInitials = (name: string) => {
-  const names = name.split(' ');
-  return names.length >= 2 ? `${names[0][0]}${names[1][0]}` : names[0][0];
-};
+
 
 const AboutPage = () => {
   const [selectedMember, setSelectedMember] = useState<typeof teamData[0] | null>(null);
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
-      <div className="max-w-6xl mx-auto w-full">
+    <div className="min-h-screen min-w-screen flex items-center justify-center p-0 md:p-6" style={{ backgroundImage: 'url(/bg2.png)' ,backgroundSize: 'cover',
+        backgroundPosition: 'center', }}>
+      <div className=" max-w-6xl mx-auto w-full p-5 rounded-[15px]
+             bg-white/10 border border-white/20
+             backdrop-blur-lg backdrop-saturate-125
+             shadow-lg hidden md:block" >
         {!selectedMember ? (
-          // Default view - Our Team
+         
           <>
-            <h1 className="text-4xl font-bold text-black ">Our Team</h1>
+            <h1 className="text-4xl  font-bold text-white ">Our Team</h1>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
               <div className="max-w-md">
-                <p className="text-lg text-gray-700 leading-relaxed">
+                <p className="text-lg text-gray-100 leading-relaxed">
                   We're a dedicated team of creative minds, problem-solvers, and innovators working 
                   together to deliver exceptional results. With diverse skills and shared passion, we 
                   approach challenges with fresh perspectives and effective solutions. 
@@ -125,11 +136,11 @@ const AboutPage = () => {
             </div>
           </>
         ) : (
-          // Individual member view
+        
           <div>
  <button
                 onClick={() => setSelectedMember(null)}
-                className="mb-4 text-blue-600 hover:text-blue-800 font-medium transition-colors"
+                className="mb-4 text-white hover:text-white font-medium transition-colors"
               >
                 ← Back to Our Team
               </button>
@@ -138,10 +149,10 @@ const AboutPage = () => {
             <div>
                 
             <div className="max-w-md transform transition-all duration-500 animate-in slide-in-from-left" key={selectedMember.id}>
-              <h1 className="text-3xl font-bold text-black mb-1">{selectedMember.name}</h1>
-              <h2 className="text-md text-gray-600 mb-2">{selectedMember.title}</h2>
+              <h1 className="text-3xl font-bold text-white mb-1">{selectedMember.name}</h1>
+              <h2 className="text-md text-gray-100 mb-2">{selectedMember.title}</h2>
               <div className=" border-gray-300 border-2 mb-2 w-[200px]"></div>
-              <p className="text-md text-gray-700 leading-relaxed">
+              <p className="text-md text-gray-100 leading-relaxed">
                 {selectedMember.description}
               </p>
             </div>
@@ -163,7 +174,7 @@ const AboutPage = () => {
                     />
                   ) : (
                     <span className="text-4xl font-bold text-gray-600">
-                      {getInitials(member.name)}
+                      {(member.initials)}
                     </span>
                   )}
                 </div>
@@ -173,6 +184,8 @@ const AboutPage = () => {
           </div>
         )}
       </div>
+      
+      <AboutUsMobile teamData={teamData} />
     </div>
   );
 };
