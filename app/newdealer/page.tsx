@@ -65,12 +65,12 @@ const Page = () => {
       });
       gsap.fromTo(
         splitTextRef.current,
-        { x: 100, opacity: 0, width: 720, height: 260 },
+        { x: 100, opacity: 0, width: 720, height: 360 },
         {
           x: 0,
           opacity: 1,
           width: 720,
-          height: 260,
+          height: 360,
           duration: 1.2,
           ease: 'power2.inOut',
         }
@@ -181,7 +181,7 @@ const Page = () => {
   className="fixed left-10 top-1/2 -translate-y-1/2 z-30 opacity-0 text-white"
   style={{
     width: 720,
-    height: 260,
+    height: 360,
     background: "rgba(255,255,255,0.10)",
     borderRadius: "2.5rem",
     boxShadow: "0 8px 40px rgba(0,0,0,0.45)",
@@ -197,6 +197,9 @@ const Page = () => {
           <p className="text-base md:text-xl leading-relaxed font-extrabold">
             SIX offers a trusted, user-friendly platform tailored for used car dealers and individual sellers. Connect directly with owners to skip middlemen, negotiate freely, and buy within budget at your best price. With verified listings, genuine leads, and direct deals, SIX ensures a aster, safer, and more reliable experience. Selling is made easy with direct buyers.this is after the transition
           </p>
+          <button onClick={()=>{
+            window.location.href = '/registration';
+          }} className="bg-white text-black font-bold px-10 py-2 rounded-xl mt-10">Next</button>
         </div>
       </>
     )}
