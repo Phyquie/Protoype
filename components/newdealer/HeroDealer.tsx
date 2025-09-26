@@ -1,0 +1,206 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import bg from "../../public/bg.png";
+import six from "../../public/six logo.svg";
+
+gsap.registerPlugin(ScrollTrigger);
+
+const HeroDealer = () => {
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const glassDivRef = useRef<HTMLDivElement>(null);
+  const splitTextRef = useRef<HTMLDivElement>(null);
+  const splitImgRef = useRef<HTMLDivElement>(null);
+  const bgImageRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+  const [split, setSplit] = useState(false);
+
+  useEffect(() => {
+    const letters = headingRef.current?.querySelectorAll("span");
+    if (letters) {
+      gsap.to(letters, {
+        opacity: 0,
+        y: -50,
+        rotationX: 90,
+        stagger: 0.05,
+        duration: 1,
+        ease: "power2.inOut",
+        scrollTrigger: {
+          trigger: headingRef.current,
+          start: "center center",
+          end: "bottom center",
+          scrub: true,
+        },
+      });
+    }
+    ScrollTrigger.create({
+      trigger: sectionRef.current,
+      start: "top center",
+      end: "+=100vh",
+      pin: sectionRef.current,
+      pinSpacing: true,
+    });
+    return () => {
+      ScrollTrigger.getAll().forEach((st) => st.kill());
+    };
+  }, []);
+
+  useEffect(() => {
+    if (split) {
+      gsap.to(glassDivRef.current, {
+        x: -200,
+        opacity: 0,
+        duration: 1.1,
+        ease: "power2.inOut",
+        pointerEvents: "none",
+      });
+      gsap.fromTo(
+        splitTextRef.current,
+        { x: 100, opacity: 0, width: 720, height: 360 },
+        {
+          x: 0,
+          opacity: 1,
+          width: 720,
+          height: 360,
+          duration: 1.2,
+          ease: "power2.inOut",
+        }
+      );
+      gsap.to(bgImageRef.current, {
+        left: "auto",
+        right: 0,
+        width: 720,
+        height: 340,
+        top: "50%",
+        y: "-50%",
+        borderRadius: "2.5rem",
+        opacity: 1,
+        duration: 1.2,
+        ease: "power2.inOut",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      });
+    } else {
+      gsap.to(glassDivRef.current, {
+        x: 0,
+        opacity: 1,
+        duration: 0.7,
+        ease: "power2.inOut",
+        pointerEvents: "auto",
+      });
+      gsap.set(bgImageRef.current, {
+        left: 0,
+        right: 0,
+        top: 0,
+        y: 0,
+        width: "100vw",
+        height: "100vh",
+        borderRadius: 0,
+        opacity: 1,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      });
+      gsap.set(splitTextRef.current, {
+        opacity: 0,
+      });
+    }
+  }, [split]);
+
+  return (
+    <div className="relative h-[400vh] w-full">
+      <div
+        ref={bgImageRef}
+        className="fixed -z-10"
+        style={{
+          left: 0,
+          top: 0,
+          width: "100vw",
+          height: "100vh",
+          backgroundImage: `url(${bg.src})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          transition: "all 0.7s cubic-bezier(0.77,0,0.175,1)",
+        }}
+      />
+      <div className="fixed top-10 left-10 z-30 flex flex-col items-center select-none" style={{ pointerEvents: "none" }}>
+        <Image src={six} alt="six logo" className="mb-1" />
+        <span className="text-white absolute bottom-[-60px] font-extrabold text-5xl md:text-8xl tracking-tight leading-none drop-shadow-lg" style={{ fontFamily: "inherit" }}>
+          Dealer
+        </span>
+      </div>
+      {!split ? (
+        <section className="h-screen mb-12 flex flex-col justify-end items-center text-white relative z-20 pb-52">
+          <h1 ref={headingRef} className="text-5xl md:text-7xl font-extrabold text-center">
+            {"We Welcome Car Dealers".split("").map((char, i) => (
+              <span key={i} className="inline-block">
+                {char === " " ? "\u00A0" : char}
+              </span>
+            ))}
+          </h1>
+        </section>
+      ) : null}
+      <section ref={sectionRef} className="min-h-[200vh] flex flex-col items-center justify-start relative z-30">
+        <div
+          ref={glassDivRef}
+          className="w-[95%] md:w-[90%] flex flex-col items-center justify-center rounded-[2.5rem] p-10 md:p-16 text-white text-center backdrop-blur-2xl bg-white/10 shadow-2xl border-2 border-white/30 -mt-12 md:-mt-44 absolute left-1/2 top-0 z-20"
+          style={{
+            transform: "translateX(-50%)",
+            background: "rgba(255, 255, 255, 0.08)",
+            border: "1.5px solid rgba(255, 255, 255, 0.25)",
+            boxShadow: "0 8px 40px rgba(0,0,0,0.45), inset 0 0 30px rgba(255,255,255,0.05)",
+            backdropFilter: "blur(20px)",
+            WebkitBackdropFilter: "blur(20px)",
+          }}
+        >
+          <h2 className="text-3xl md:text-4xl font-extrabold mb-7">Why Become a dealer</h2>
+          <p className="text-base md:text-xl leading-relaxed font-extrabold">
+            SIX offers a trusted, user-friendly platform tailored for used car dealers and individual sellers. Connect directly with owners to skip middlemen, negotiate freely, and buy within budget at your best price. With verified listings, genuine leads, and direct deals, SIX ensures a faster, safer, and more reliable experience. Selling is made easy with direct buyers,
+          </p>
+          <button onClick={() => setSplit(true)} className="bg-black text-white font-bold px-6 py-3 text-2xl rounded-xl my-8">
+            Read More
+          </button>
+        </div>
+        {split && (
+          <div
+            ref={splitTextRef}
+            className="fixed left-10 top-1/2 -translate-y-1/2 z-30 opacity-0 text-white"
+            style={{
+              width: 720,
+              height: 360,
+              background: "rgba(255,255,255,0.10)",
+              borderRadius: "2.5rem",
+              boxShadow: "0 8px 40px rgba(0,0,0,0.45)",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "flex-start",
+              padding: 32,
+              border: "1.5px solid rgba(255, 255, 255, 0.25)",
+            }}
+          >
+            <h1 className="text-4xl font-bold mb-2">Point 1</h1>
+            <p className="text-base md:text-xl leading-relaxed font-extrabold">
+              SIX offers a trusted, user-friendly platform tailored for used car dealers and individual sellers. Connect directly with owners to skip middlemen, negotiate freely, and buy within budget at your best price. With verified listings, genuine leads, and direct deals, SIX ensures a aster, safer, and more reliable experience. Selling is made easy with direct buyers.this is after the transition
+            </p>
+            <button
+              onClick={() => {
+                window.location.href = "/registration";
+              }}
+              className="bg-white text-black font-bold px-10 py-2 rounded-xl mt-10"
+            >
+              Next
+            </button>
+          </div>
+        )}
+      </section>
+    </div>
+  );
+};
+
+export default HeroDealer;

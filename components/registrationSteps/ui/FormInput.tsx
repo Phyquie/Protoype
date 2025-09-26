@@ -21,7 +21,15 @@ const FormInput: React.FC<FormInputProps> = ({
 }) => {
   return (
     <div style={style}>
-      <label style={{ color: '#fff', fontWeight: 700 }}>{label}</label>
+      <label style={{ 
+        color: '#fff', 
+        fontWeight: 700,
+        fontSize: 'clamp(0.9rem, 2.5vw, 1.1rem)',
+        display: 'block',
+        marginBottom: '4px'
+      }}>
+        {label}
+      </label>
       <input
         type={type}
         placeholder={placeholder}
@@ -36,9 +44,10 @@ const FormInput: React.FC<FormInputProps> = ({
           background: 'rgba(255,255,255,0.25)',
           color: '#fff',
           fontWeight: 600,
-          marginTop: '4px',
           outline: 'none',
-          fontSize: '1rem',
+          fontSize: 'clamp(0.9rem, 2.5vw, 1rem)',
+          boxSizing: 'border-box',
+          minHeight: '44px', // Better touch target for mobile
         }}
       />
     </div>

@@ -21,8 +21,7 @@ const AboutUsMobile: React.FC<AboutUsMobileProps> = ({ teamData }) => {
   const [selectedMember, setSelectedMember] = useState<typeof teamData[0] | null>(teamData[0]);
 
   return (
-    <div className="md:hidden block p-3" style={{backgroundImage: 'url(/bg3.png)' ,backgroundSize: 'cover',
-        backgroundPosition: 'center',}}>
+    <div className="md:hidden block p-3 bg-cover bg-center" style={{backgroundImage: 'url(/bg3.png)'}}>
       {/* Header Section */}
       <div className="mb-8">
         <h1 className="text-4xl font-bold text-white mb-4">Our Team</h1>

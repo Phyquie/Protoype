@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Button from '../ui/Button';
+import Button from './ui/Button';
 
 interface Step3TermsProps {
   onNext: () => void;
@@ -19,40 +19,16 @@ const Step3Terms: React.FC<Step3TermsProps> = ({ onNext, onPrev }) => {
   };
 
   return (
-    <div style={{ 
-      minHeight: 420, 
-      display: 'flex', 
-      flexDirection: 'column', 
-      alignItems: 'center', 
-      justifyContent: 'center' 
-    }}>
-      <h1 style={{ 
-        color: '#fff', 
-        fontWeight: 700, 
-        fontSize: '2.2rem', 
-        textAlign: 'center', 
-        marginBottom: 32, 
-        marginTop: 0 
-      }}>
+    <div className="min-h-[420px] flex flex-col items-center justify-center">
+      <h1 className="text-white font-bold text-3xl lg:text-4xl text-center mb-8 mt-0">
         Terms & Condition
       </h1>
       
-      <div style={{ 
-        background: '#111', 
-        borderRadius: 12, 
-        padding: '24px 24px', 
-        marginBottom: 32, 
-        width: '100%' 
-      }}>
-        <div style={{ color: '#fff', fontWeight: 700, marginBottom: 12 }}>
+      <div className="bg-gray-900 rounded-xl p-6 mb-8 w-full">
+        <div className="text-white font-bold mb-3 text-sm lg:text-lg">
           Read the terms and conditions
         </div>
-        <div style={{ 
-          color: '#fff', 
-          fontWeight: 500, 
-          fontSize: '1rem', 
-          marginBottom: 10 
-        }}>
+        <div className="text-white font-medium text-xs lg:text-base mb-2.5 leading-relaxed">
           1. carefully before proceeding. The following is dummy text for placeholder use only:<br />
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi.<br /><br />
           2. carefully before proceeding. The following is dummy text for placeholder use only:<br />
@@ -60,35 +36,22 @@ const Step3Terms: React.FC<Step3TermsProps> = ({ onNext, onPrev }) => {
         </div>
       </div>
       
-      <form style={{ width: '100%' }} onSubmit={handleSubmit}>
-        <div style={{ display: 'flex', alignItems: 'center', marginBottom: 18 }}>
+      <form className="w-full" onSubmit={handleSubmit}>
+        <div className="flex items-center mb-5 md:items-start">
           <input
             type="checkbox"
             id="terms"
             checked={termsChecked}
             onChange={(e) => setTermsChecked(e.target.checked)}
-            style={{ width: 20, height: 20, marginRight: 10 }}
+            className="w-5 h-5 mr-2.5 min-w-5"
           />
-          <label htmlFor="terms" style={{ 
-            color: '#fff', 
-            fontWeight: 500, 
-            fontSize: '1.05rem', 
-            cursor: 'pointer' 
-          }}>
+          <label htmlFor="terms" className="text-white font-medium text-xs lg:text-base cursor-pointer">
             I agree to the terms & condition carefully before proceeding
           </label>
         </div>
         
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>
-          <div style={{ 
-            background: '#fff', 
-            color: '#2D5BFF', 
-            fontWeight: 700, 
-            fontSize: '1.2rem', 
-            borderRadius: 6, 
-            padding: '6px 18px', 
-            letterSpacing: 1 
-          }}>
+        <div className="flex items-center gap-3 mb-6 md:flex-col md:items-start">
+          <div className="bg-white text-blue-600 font-bold text-base lg:text-xl rounded-md px-5 py-1.5 tracking-wider">
             19+16
           </div>
           <input
@@ -96,21 +59,11 @@ const Step3Terms: React.FC<Step3TermsProps> = ({ onNext, onPrev }) => {
             placeholder="Captcha"
             value={captchaInput}
             onChange={(e) => setCaptchaInput(e.target.value)}
-            style={{
-              width: 120,
-              padding: '10px 16px',
-              borderRadius: '8px',
-              border: 'none',
-              background: 'rgba(255,255,255,0.95)',
-              color: '#222',
-              fontWeight: 600,
-              fontSize: '1rem',
-              outline: 'none',
-            }}
+            className="w-30 max-w-full px-4 py-2.5 rounded-lg border-none bg-white/95 text-gray-800 font-semibold text-sm lg:text-base outline-none box-border md:w-full md:max-w-48"
           />
         </div>
         
-        <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12 }}>
+        <div className="flex justify-between gap-3 md:flex-row flex-col md:gap-4">
           <Button variant="secondary" onClick={onPrev}>
             Prev
           </Button>

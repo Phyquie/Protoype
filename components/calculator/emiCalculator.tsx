@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
-// @ts-ignore
-import CanvasJS from '@canvasjs/charts';
+import React, { useState, useEffect } from 'react';
+import { Pie, PieChart, ResponsiveContainer, Cell } from 'recharts';
+import Link from 'next/link';
 
 interface EmiCalculatorProps {
   defaultCarPrice?: number;
@@ -29,7 +29,59 @@ const EmiCalculator: React.FC<EmiCalculatorProps> = ({
   const [totalInterest, setTotalInterest] = useState<number>(0);
   const [totalAmount, setTotalAmount] = useState<number>(0);
   const [monthlyEmi, setMonthlyEmi] = useState<number>(0);
-  const chartRef = useRef<HTMLDivElement>(null);
+
+  // Advanced label rendering with connecting lines for all segments
+  const renderCustomizedLabel = (props: any) => {
+    const {
+      cx,
+      cy,
+      midAngle,
+      innerRadius,
+      outerRadius,
+      percent,
+      value,
+      name,
+      fill
+    } = props;
+
+    const RADIAN = Math.PI / 180;
+    const sin = Math.sin(-RADIAN * (midAngle ?? 1));
+    const cos = Math.cos(-RADIAN * (midAngle ?? 1));
+    const sx = (cx ?? 0) + ((outerRadius ?? 0) + 10) * cos;
+    const sy = (cy ?? 0) + ((outerRadius ?? 0) + 10) * sin;
+    const mx = (cx ?? 0) + ((outerRadius ?? 0) + 30) * cos;
+    const my = (cy ?? 0) + ((outerRadius ?? 0) + 30) * sin;
+    const ex = mx + (cos >= 0 ? 1 : -1) * 22;
+    const ey = my;
+    const textAnchor = cos >= 0 ? 'start' : 'end';
+
+    return (
+      <g>
+        <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={fill} fill="none" strokeWidth={1} />
+        <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
+        <text 
+          x={ex + (cos >= 0 ? 1 : -1) * 12} 
+          y={ey} 
+          textAnchor={textAnchor} 
+          fill="#333" 
+          fontSize="12" 
+          fontWeight="bold"
+        >
+          {`${formatCurrencyShort(value)}`}
+        </text>
+        <text 
+          x={ex + (cos >= 0 ? 1 : -1) * 12} 
+          y={ey} 
+          dy={18} 
+          textAnchor={textAnchor} 
+          fill="#999" 
+          fontSize="10"
+        >
+          {`${name} (${((percent ?? 1) * 100).toFixed(1)}%)`}
+        </text>
+      </g>
+    );
+  };
 
   // Update state when props change
   useEffect(() => {
@@ -62,80 +114,23 @@ const EmiCalculator: React.FC<EmiCalculatorProps> = ({
     setTotalAmount(totalAmountPayable);
   }, [carPrice, downPayment, years, interestRate]);
 
-    // Create CanvasJS chart
-  const chartRefDesktop = useRef<HTMLDivElement>(null);
-const chartRefMobile = useRef<HTMLDivElement>(null);
+  // Prepare data for the pie chart
+  const chartData = [
+    {
+      name: 'Down Payment',
+      value: downPayment,
+      color: '#FF6B47'
+    },
+    {
+      name: 'Total EMI',
+      value: totalAmount,
+      color: '#333333'
+    }
+  ];
 
-useEffect(() => {
-  const createChart = (
-    container: HTMLDivElement | null,
-    size: { height: number; width: number }
-  ) => {
-    if (!container) return;
-
-    const chart = new CanvasJS.Chart(container, {
-      animationEnabled: true,
-      backgroundColor: "transparent",
-      height: size.height,
-      width: size.width,
-      data: [
-        {
-          type: "doughnut",
-          startAngle: -90,
-          innerRadius: "60%",
-          dataPoints: [
-            { 
-              y: downPayment, 
-              label: `Down Payment ${formatCurrencyShort(downPayment)}`,
-              color: "#FF6B47"
-            },
-            { 
-              y: totalAmount, 
-              label:`Total Emi ${formatCurrencyShort(totalAmount)}`,
-              color: "#333333"
-            }
-          ]
-        }
-      ]
-    });
-
-    chart.render();
-
-    // Hide watermark
-    setTimeout(() => {
-      const creditLink = container.querySelector('.canvasjs-chart-credit');
-      if (creditLink) {
-        (creditLink as HTMLElement).style.display = 'none';
-      }
-    }, 100);
-
-    return chart;
+  const formatCurrencyShort = (amount: number): string => {
+    return `₹ ${Math.floor(amount).toLocaleString("en-IN")}`;
   };
-
-  // Desktop: Bigger size
-  const chartDesktop = createChart(chartRefDesktop.current, {
-    height: 440,
-    width: 440
-  });
-
-  // Mobile: Smaller size
-  const chartMobile = createChart(chartRefMobile.current, {
-    height: 320,
-    width: 320
-  });
-
-  return () => {
-    chartDesktop?.destroy();
-    chartMobile?.destroy();
-  };
-}, [downPayment, totalAmount]);
-
-
-  
-
-const formatCurrencyShort = (amount: number): string => {
-  return `₹ ${Math.floor(amount).toLocaleString("en-IN")}`;
-};
 
   return (
     <div className="bg-white min-h-screen  font-sans">
@@ -176,9 +171,50 @@ const formatCurrencyShort = (amount: number): string => {
         </div>
 
         {/* Mobile Layout: Chart Second */}
-        <div className="lg:hidden  mb-6 flex justify-center">
-          <div className="relative w-80 h-80">
-            <div ref={chartRefMobile} className="w-full h-full"></div>
+        <div className="md:hidden  flex justify-center">
+          <div className="relative w-full h-80">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={chartData}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  label={renderCustomizedLabel}
+                  innerRadius={40}
+                  outerRadius={60}
+                  fill="#8884d8"
+                  dataKey="value"
+                >
+                  {chartData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+         <div className="lg:hidden md:block hidden mb-6  justify-center">
+          <div className="relative w-full h-96">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={chartData}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  label={renderCustomizedLabel}
+                  innerRadius={60}
+                  outerRadius={90}
+                  fill="#8884d8"
+                  dataKey="value"
+                >
+                  {chartData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+              </PieChart>
+            </ResponsiveContainer>
           </div>
         </div>
 
@@ -304,12 +340,30 @@ const formatCurrencyShort = (amount: number): string => {
             <div className="flex items-center gap-32">
               
               {/* Chart Container */}
-              <div className="relative w-80 h-80">
-                <div ref={chartRefDesktop} className="w-full h-full"></div>
-            
+              <div className="relative w-[450px] h-[400px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={chartData}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      label={renderCustomizedLabel}
+                      innerRadius={70}
+                      outerRadius={140}
+                      fill="#8884d8"
+                      dataKey="value"
+                    >
+                      {chartData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                  </PieChart>
+                </ResponsiveContainer>
               </div>
 
               {/* Results Table - Positioned to the right */}
+              <div className="flex flex-col items-center">
               <div className="bg-gray-50 border-2 flex py-4 px-9 w-80 rounded-2xl min-w-max shadow-sm">
                 <div className="space-y-4 flex flex-col bg-white p-6 min-w-max rounded-2xl">
                   <div className="flex justify-between items-center py-3 border-b border-gray-300">
@@ -330,8 +384,14 @@ const formatCurrencyShort = (amount: number): string => {
                       {formatCurrencyShort(totalAmount)}
                     </span>
                   </div>
+                 
                 </div>
               </div>
+               <div className='flex flex-col items-center mt-4'>
+                   <Link href="/applyforloan" className="mt-4 text-white bg-black px-4 py-2 rounded-xl hover:bg-black/80 transition">
+        Apply for a Loan
+      </Link></div>
+        </div>
             </div>
           </div>
         </div>
@@ -393,6 +453,7 @@ const formatCurrencyShort = (amount: number): string => {
                 Your loan Amount : <span className="text-orange-500">{formatCurrencyShort(loanAmount)}</span>
               </p>
             </div>
+            
 
             {/* Years and Interest Rate Section - Mobile */}
             <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
@@ -450,6 +511,10 @@ const formatCurrencyShort = (amount: number): string => {
               </div>
             </div>
           </div>
+          <div className='flex flex-col items-center mt-4 md:hidden'>
+                   <Link href="/applyforloan" className="mt-4 text-white bg-black px-4 py-2 rounded-xl hover:bg-black/80 transition">
+        Apply for a Loan
+      </Link></div>
         </div>
       </div>
 
@@ -475,13 +540,6 @@ const formatCurrencyShort = (amount: number): string => {
           box-shadow: 0 2px 6px rgba(0,0,0,0.15);
           cursor: pointer;
           border: none;
-        }
-        
-        /* Hide CanvasJS watermark */
-        .canvasjs-chart-credit {
-          display: none !important;
-          visibility: hidden !important;
-          opacity: 0 !important;
         }
       `}</style>
     </div>

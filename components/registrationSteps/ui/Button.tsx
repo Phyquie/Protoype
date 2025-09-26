@@ -23,9 +23,11 @@ const Button: React.FC<ButtonProps> = ({
     borderRadius: '8px',
     border: 'none',
     fontWeight: 700,
-    fontSize: '1.1rem',
+    fontSize: 'clamp(0.9rem, 2.5vw, 1.1rem)',
     cursor: 'pointer',
     letterSpacing: '1px',
+    minHeight: '44px', // Better touch target for mobile
+    boxSizing: 'border-box' as const,
     ...style
   };
 

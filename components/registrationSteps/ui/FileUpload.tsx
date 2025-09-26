@@ -18,9 +18,29 @@ const FileUpload: React.FC<FileUploadProps> = ({
   };
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-      <label style={{ color: '#fff', fontWeight: 700 }}>{label}</label>
-      <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', color: '#fff', fontWeight: 600 }}>
+    <div className="file-upload" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
+      <label style={{ 
+        color: '#fff', 
+        fontWeight: 700,
+        fontSize: 'clamp(0.9rem, 2.5vw, 1.1rem)',
+        flex: 1,
+        minWidth: '120px'
+      }}>
+        {label}
+      </label>
+      <label style={{ 
+        display: 'flex', 
+        alignItems: 'center', 
+        cursor: 'pointer', 
+        color: '#fff', 
+        fontWeight: 600,
+        fontSize: 'clamp(0.9rem, 2.5vw, 1rem)',
+        background: 'rgba(255,255,255,0.12)',
+        padding: '8px 16px',
+        borderRadius: '8px',
+        minHeight: '40px',
+        boxSizing: 'border-box',
+      }}>
         <input
           type="file"
           style={{ display: 'none' }}
@@ -42,6 +62,20 @@ const FileUpload: React.FC<FileUploadProps> = ({
           Upload
         </span>
       </label>
+      
+      <style jsx>{`
+        @media (max-width: 768px) {
+          .file-upload {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 8px !important;
+          }
+          .file-upload label:last-child {
+            align-self: stretch !important;
+            justify-content: center !important;
+          }
+        }
+      `}</style>
     </div>
   );
 };
